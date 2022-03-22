@@ -2,8 +2,8 @@
 #define __GRAPHIC_H__
 
 #include "BaseType.h"
-#include "Uefi.h"
 #include "Memory.h"
+#include "Uefi.h"
 
 #pragma pack(1)
 typedef struct

@@ -1,35 +1,26 @@
 #include <BaseType.h>
-#include <Uefi.h>
 #include <Graphic.h>
-#include <Printk.h>
 #include <Memory.h>
+#include <Printk.h>
+#include <Uefi.h>
 #include <X64/GDT.h>
 
-VOID _start(BOOT_PARAMETER *BP)
-{
-    // 初始化 ds ss es 至 0
-    asm volatile("mov $0, %%ax\n\t"
-                 "mov %%ax, %%ds\n\t"
-                 "mov %%ax, %%ss\n\t"
-                 "mov %%ax, %%es\n\t"
-                 :
-                 :
-                 : "ax");
-
+VOID InitKernel(BOOT_PARAMETER *BP) {
+    // VOID _start(BOOT_PARAMETER *BP) {
+    // InitGDT();
     InitPrintk(BP->FontFile->Address, BP->GP->HorizontalResolution, BP->GP->VerticalResolution);
-    InitGDT();
     InitGraphic(BP->GP);
-    InitMemory(BP->MM);
+    // InitMemory(BP->MM);
     Printk("Hello,Sparrow!\n");
 
     // GDTR
-    // GDTR gdtr;
-    // Printk("gdtr:\n");
-    // asm volatile("sgdt %0"
-    //              : "=m"(gdtr)
-    //              :
-    //              :);
-    // Printk("size=%#x, addr=%#x\n", gdtr.size, gdtr.addr);
+    GDTR gdtr;
+    Printk("gdtr:\n");
+    asm volatile("sgdt %0"
+                 : "=m"(gdtr)
+                 :
+                 :);
+    Printk("size=%#x, addr=%#x\n", gdtr.size, gdtr.addr);
 
     // GDT
     // U64 *gdt = (U64 *)gdtr.addr;

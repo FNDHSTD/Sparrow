@@ -1,13 +1,13 @@
 #ifndef __UEFI_H__
 #define __UEFI_H__
 
-typedef unsigned char UINT8;
-typedef UINT8 CHAR8;
-typedef unsigned int UINT32;
+typedef unsigned char      UINT8;
+typedef UINT8              CHAR8;
+typedef unsigned int       UINT32;
 typedef unsigned long long UINT64;
-typedef UINT64 UINTN;
-typedef UINT64 EFI_PHYSICAL_ADDRESS;
-typedef UINT64 EFI_VIRTUAL_ADDRESS;
+typedef UINT64             UINTN;
+typedef UINT64             EFI_PHYSICAL_ADDRESS;
+typedef UINT64             EFI_VIRTUAL_ADDRESS;
 
 #pragma pack(1)
 typedef struct
@@ -55,8 +55,7 @@ typedef struct
     UINT64 Reserved;
 } EFI_MEMORY_DESCRIPTOR;
 
-typedef enum
-{
+typedef enum {
     ///
     /// 保留
     ///
@@ -125,34 +124,34 @@ typedef enum
 
 typedef struct
 {
-    UINTN MemoryMapSize;
+    UINTN                  MemoryMapSize;
     EFI_MEMORY_DESCRIPTOR *MemoryMap;
-    UINTN MapKey;
-    UINTN DescriptorSize;
-    UINT32 DescriptorVersion;
+    UINTN                  MapKey;
+    UINTN                  DescriptorSize;
+    UINT32                 DescriptorVersion;
 } MEMORY_MAP;
 
 typedef struct
 {
     PHYSICAL_ADDRESS FrameBufferBase;
-    UINT64 FrameBufferSize;
-    UINT32 HorizontalResolution;
-    UINT32 VerticalResolution;
+    UINT64           FrameBufferSize;
+    UINT32           HorizontalResolution;
+    UINT32           VerticalResolution;
 } GRAPHIC_PARAMETER;
 
 typedef struct
 {
     PHYSICAL_ADDRESS Address;
-    UINT64 Size;
-    UINT64 Pages;
+    UINT64           Size;
+    UINT64           Pages;
 } File;
 
 typedef struct
 {
-    MEMORY_MAP *MM;
+    MEMORY_MAP *       MM;
     GRAPHIC_PARAMETER *GP;
-    File *KernelFile;
-    File *FontFile;
+    File *             KernelFile;
+    File *             FontFile;
 } BOOT_PARAMETER;
 
 #endif

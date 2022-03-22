@@ -2,12 +2,10 @@
 #define __MEMORY_H__
 
 #include "BaseType.h"
-#include "Uefi.h"
 #include "Printk.h"
+#include "Uefi.h"
 
-
-typedef enum
-{
+typedef enum {
     OS_CODE,
     OS_DATA,
     AP_CODE,
@@ -18,19 +16,18 @@ typedef enum
     RESERVED_MEMORY,
 } MEMORY_TYPE;
 
-typedef struct MEMORY_DESCRIPTOR_NODE
-{
-    PHYSICAL_ADDRESS Start;
-    U64 PageSize;
-    MEMORY_TYPE Type;
+typedef struct MEMORY_DESCRIPTOR_NODE {
+    PHYSICAL_ADDRESS               Start;
+    U64                            PageSize;
+    MEMORY_TYPE                    Type;
     struct MEMORY_DESCRIPTOR_NODE *Next;
 } MEMORY_DESCRIPTOR_NODE;
 
 typedef struct
 {
-    MEMORY_TYPE Type;
+    MEMORY_TYPE      Type;
     PHYSICAL_ADDRESS Start;
-    U64 PageSize;
+    U64              PageSize;
 } MEMORY_DESCRIPTOR;
 
 STATUS_CODE InitMemory(IN MEMORY_MAP *MM);

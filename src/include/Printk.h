@@ -6,15 +6,14 @@
 #include "BaseType.h"
 #include "Graphic.h"
 
-#define MINUS 0b1      // -
-#define PLUS 0b10      // +
-#define NUMBER 0b100   // #
-#define ZERO 0b1000    // 0
-#define SPACE 0b10000  // 空格
-#define SMALL 0b100000 // 大小写
+#define MINUS  0b1      // -
+#define PLUS   0b10     // +
+#define NUMBER 0b100    // #
+#define ZERO   0b1000   // 0
+#define SPACE  0b10000  // 空格
+#define SMALL  0b100000 // 大小写
 
-
-STATUS_CODE InitPrintk(IN EFI_PHYSICAL_ADDRESS FontAddr, IN U32 ScreenWidth, IN U32 ScreenHight);
+STATUS_CODE InitPrintk(IN PHYSICAL_ADDRESS FontAddr, IN U32 ScreenWidth, IN U32 ScreenHight);
 
 STATUS_CODE numToStr(IN I64 n, IN U32 base, OUT C8 str[65], OUT I32 *size);
 
