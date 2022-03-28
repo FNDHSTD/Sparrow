@@ -1,6 +1,5 @@
-#include <Printk.h>
+#include <Sparrow/Printk.h>
 #include <X64/GDT.h>
-#include <setjmp.h>
 
 #define GDT_ENTRY 5
 

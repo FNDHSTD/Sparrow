@@ -25,5 +25,6 @@ typedef enum {
 
 #define IN
 #define OUT
+#define NULL 0
 
 #endif

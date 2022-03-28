@@ -1,4 +1,5 @@
-#include <Printk.h>
+#include <Sparrow/Memory.h>
+#include <Sparrow/Printk.h>
 
 BGRR_PIXEL *gPrintkFontAddr;
 U32         gPrintkCharHight;

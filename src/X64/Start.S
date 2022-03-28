@@ -3,7 +3,7 @@
 _start:
     pushq %rdi
     call InitGDT
-    movq $0x8, %rax
+    movq $0x08, %rax
     push %rax
     push $_after
     lretq

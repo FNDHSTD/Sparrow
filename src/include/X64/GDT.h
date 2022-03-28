@@ -1,7 +1,7 @@
 #ifndef __GDT_H__
 #define __GDT_H__
 
-#include <BaseType.h>
+#include <Sparrow/BaseType.h>
 
 #define SEG_S(x)   ((x) << 4)        //描述符类型，系统段为 0， 代码 or 数据段为0
 #define SEG_DPL(x) (((x)&0b11) << 5) //特权级

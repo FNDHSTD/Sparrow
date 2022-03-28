@@ -1,4 +1,5 @@
-#include <Graphic.h>
+#include <Sparrow/Graphic.h>
+#include <Sparrow/Memory.h>
 
 BGRR_PIXEL *gFrameBufferBase;
 U32         gFrameBufferSize;

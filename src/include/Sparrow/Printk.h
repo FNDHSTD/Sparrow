@@ -3,8 +3,8 @@
 
 #include <stdarg.h>
 
-#include "BaseType.h"
-#include "Graphic.h"
+#include <Sparrow/BaseType.h>
+#include <Sparrow/Graphic.h>
 
 #define MINUS  0b1      // -
 #define PLUS   0b10     // +

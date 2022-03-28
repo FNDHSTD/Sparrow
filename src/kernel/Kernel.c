@@ -1,16 +1,16 @@
-#include <BaseType.h>
-#include <Graphic.h>
-#include <Memory.h>
-#include <Printk.h>
+#include <Sparrow/BaseType.h>
+#include <Sparrow/Graphic.h>
+#include <Sparrow/Memory.h>
+#include <Sparrow/Printk.h>
 #include <Uefi.h>
 #include <X64/GDT.h>
+#include <X64/IDT.h>
 
 VOID InitKernel(BOOT_PARAMETER *BP) {
-    // VOID _start(BOOT_PARAMETER *BP) {
-    // InitGDT();
-    InitPrintk(BP->FontFile->Address, BP->GP->HorizontalResolution, BP->GP->VerticalResolution);
     InitGraphic(BP->GP);
-    // InitMemory(BP->MM);
+    InitPrintk(BP->FontFile->Address, BP->GP->HorizontalResolution, BP->GP->VerticalResolution);
+    InitIDT();
+    InitMemory(BP->MM);
     Printk("Hello,Sparrow!\n");
 
     // GDTR
@@ -136,6 +136,8 @@ VOID InitKernel(BOOT_PARAMETER *BP) {
     // }
     // Printk("\n");
     // Printk("FrameBufferBase = %#llx\n", BP->GP->FrameBufferBase);
+
+    asm volatile("nop\n\t");
 
     while (1)
         ;
