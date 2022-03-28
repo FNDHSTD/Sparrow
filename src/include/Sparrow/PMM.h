@@ -19,6 +19,16 @@ typedef struct
 // 声明在 PMM.c 中
 extern PMM gPMM;
 
+typedef struct
+{
+
+} M_PAGE;
+
+typedef struct M_BLOCK {
+    U64             PAGE_ID;
+    struct M_BLOCK *Next;
+} M_BLOCK;
+
 STATUS_CODE InitPMM(IN PHYSICAL_ADDRESS MaxAddress, IN PHYSICAL_ADDRESS BitMapAddr);
 
 STATUS_CODE FreePages(IN PHYSICAL_ADDRESS PAddr, IN U64 NumberOfPages);
