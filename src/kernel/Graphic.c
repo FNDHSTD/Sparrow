@@ -9,14 +9,14 @@ U32         gScreenHeight;
 STATUS_CODE InitGraphic(IN GRAPHIC_PARAMETER *GP) {
     gFrameBufferBase = (BGRR_PIXEL *)GP->FrameBufferBase;
     gFrameBufferSize = GP->FrameBufferSize;
-    gScreenWidth     = GP->HorizontalResolution;
-    gScreenHeight    = GP->VerticalResolution;
+    gScreenWidth = GP->HorizontalResolution;
+    gScreenHeight = GP->VerticalResolution;
     return 0;
 }
 
 STATUS_CODE PutPixel(IN U32 x, IN U32 y, IN BGRR_PIXEL color) {
-    if (x < 0 || x >= gScreenWidth) {
-        if (y < 0 || y >= gScreenHeight) {
+    if (x >= gScreenWidth) {
+        if (y >= gScreenHeight) {
             return 1;
         }
     }
@@ -25,8 +25,8 @@ STATUS_CODE PutPixel(IN U32 x, IN U32 y, IN BGRR_PIXEL color) {
 }
 
 STATUS_CODE GetPixel(IN U32 x, IN U32 y, OUT BGRR_PIXEL *color) {
-    if (x < 0 || x >= gScreenWidth) {
-        if (y < 0 || y >= gScreenHeight) {
+    if (x >= gScreenWidth) {
+        if (y >= gScreenHeight) {
             return 1;
         }
     }
@@ -36,4 +36,5 @@ STATUS_CODE GetPixel(IN U32 x, IN U32 y, OUT BGRR_PIXEL *color) {
 
 STATUS_CODE Clear() {
     SetZero((PHYSICAL_ADDRESS)gFrameBufferBase, gFrameBufferSize);
+    return 0;
 }

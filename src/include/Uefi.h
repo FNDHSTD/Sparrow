@@ -119,7 +119,9 @@ typedef enum {
     /// 作为EfiConventionalMemory工作的内存区域
     ///
     EfiPersistentMemory,
-    EfiMaxMemoryType
+    EfiMaxMemoryType,
+    // 空类型
+    EMPTY
 } EFI_MEMORY_TYPE;
 
 typedef struct

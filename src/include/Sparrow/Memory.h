@@ -5,13 +5,13 @@
 #include <Uefi.h>
 
 typedef enum {
+    FREE_MEMORY,
     OS_CODE,
     OS_DATA,
     AP_CODE,
     AP_DATA,
     UEFI_MEMORY,
     MMIO_MEMORY,
-    FREE_MEMORY,
     RESERVED_MEMORY,
 } MEMORY_TYPE;
 

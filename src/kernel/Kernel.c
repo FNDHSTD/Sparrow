@@ -21,6 +21,8 @@ VOID InitKernel(BOOT_PARAMETER *BP) {
                  :
                  :);
     Printk("size=%#x, addr=%#x\n", gdtr.size, gdtr.addr);
+    while (1)
+        ;
 
     // GDT
     // U64 *gdt = (U64 *)gdtr.addr;
@@ -136,9 +138,4 @@ VOID InitKernel(BOOT_PARAMETER *BP) {
     // }
     // Printk("\n");
     // Printk("FrameBufferBase = %#llx\n", BP->GP->FrameBufferBase);
-
-    asm volatile("nop\n\t");
-
-    while (1)
-        ;
 }

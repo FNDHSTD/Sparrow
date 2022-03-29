@@ -12,19 +12,19 @@ U32         gPrintkColumn;
 extern BGRR_PIXEL *gFrameBufferBase;
 
 STATUS_CODE InitPrintk(IN EFI_PHYSICAL_ADDRESS FontAddr, IN U32 ScreenWidth, IN U32 ScreenHight) {
-    gPrintkFontAddr    = (BGRR_PIXEL *)FontAddr;
-    gPrintkCharHight   = 30;
-    gPrintkCharWidth   = 15;
+    gPrintkFontAddr = (BGRR_PIXEL *)FontAddr;
+    gPrintkCharHight = 30;
+    gPrintkCharWidth = 15;
     gPrintkCharPerLine = ScreenWidth / gPrintkCharWidth;
-    gPrintkLineCount   = ScreenHight / gPrintkCharHight;
-    gPrintkRow         = 0;
-    gPrintkColumn      = 0;
+    gPrintkLineCount = ScreenHight / gPrintkCharHight;
+    gPrintkRow = 0;
+    gPrintkColumn = 0;
     return 0;
 }
 
 STATUS_CODE drawChar(IN C8 c) {
-    U32 SourceX      = (c - 32) * gPrintkCharWidth;
-    U32 SourceY      = 0;
+    U32 SourceX = (c - 32) * gPrintkCharWidth;
+    U32 SourceY = 0;
     U32 DestinationX = gPrintkColumn * gPrintkCharWidth;
     U32 DestinationY = gPrintkRow * gPrintkCharHight;
     for (U32 i = 0; i < gPrintkCharWidth; i++) {
@@ -82,16 +82,16 @@ STATUS_CODE printChar(IN C8 c, IN U8 flag, IN I32 minWidth) {
     }
 
     C8 paddingChar = ' ';
-    if (flag & ZERO) {
+    if (flag & FORMAT_FLAG_ZERO) {
         paddingChar = '0';
     }
 
-    if (flag & MINUS) {
+    if (flag & FORMAT_FLAG_MINUS) {
         putChar(c);
         for (U8 i = 0; i < minWidth - 1; i++) {
             putChar(' ');
         }
-    } else if (flag & PLUS) {
+    } else if (flag & FORMAT_FLAG_PLUS) {
         for (U8 i = 0; i < minWidth - 1; i++) {
             putChar(paddingChar);
         }
@@ -102,11 +102,17 @@ STATUS_CODE printChar(IN C8 c, IN U8 flag, IN I32 minWidth) {
     return 0;
 }
 
-STATUS_CODE printStr(IN C8 *s) {
+STATUS_CODE printStr(IN C8 *s, I32 padding) {
+    I32 t = 0;
     while (*s) {
         putChar(*s);
         s++;
+        t++;
     }
+    for (; t <= padding; t++) {
+        putChar(' ');
+    }
+
     return 0;
 }
 
@@ -115,9 +121,9 @@ STATUS_CODE numToStr(IN I64 n, IN U32 base, OUT C8 str[65], OUT I32 *size) {
     I32 j = 0;
     C8  tmp[64];
     if (n < 0) {
-        n        = -n;
+        n = -n;
         str[j++] = '-';
-        *size    = 1;
+        *size = 1;
     } else {
         *size = 0;
     }
@@ -151,7 +157,7 @@ STATUS_CODE uNumToStr(IN U64 n, IN U32 base, OUT C8 str[65], OUT I32 *size) {
         n /= base;
     }
     tmp[i] = clist[n % base];
-    *size  = i + 1;
+    *size = i + 1;
     while (i >= 0) {
         str[j++] = tmp[i--];
     }
@@ -168,7 +174,7 @@ STATUS_CODE printDec(IN I64 d, IN U8 flag, IN I32 minWidth) {
     C8 paddingChar = ' ';
 
     // 左对齐
-    if (flag & MINUS) {
+    if (flag & FORMAT_FLAG_MINUS) {
         for (I32 i = 0; i < size; i++) {
             putChar(str[i]);
         }
@@ -178,7 +184,7 @@ STATUS_CODE printDec(IN I64 d, IN U8 flag, IN I32 minWidth) {
     }
     // 默认右对齐
     else {
-        if (flag & ZERO) {
+        if (flag & FORMAT_FLAG_ZERO) {
             paddingChar = '0';
             if (d < 0) {
                 putChar(*(str++));
@@ -206,9 +212,9 @@ STATUS_CODE printHex(IN U64 d, IN U8 flag, IN I32 minWidth) {
     C8 paddingChar = ' ';
 
     // 左对齐
-    if (flag & MINUS) {
+    if (flag & FORMAT_FLAG_MINUS) {
         // #
-        if (flag & NUMBER) {
+        if (flag & FORMAT_FLAG_NUMBER) {
             putChar('0');
             putChar('x');
             minWidth -= 2;
@@ -223,10 +229,10 @@ STATUS_CODE printHex(IN U64 d, IN U8 flag, IN I32 minWidth) {
     // 默认右对齐
     else {
         // 0填充
-        if (flag & ZERO) {
+        if (flag & FORMAT_FLAG_ZERO) {
             paddingChar = '0';
             // #
-            if (flag & NUMBER) {
+            if (flag & FORMAT_FLAG_NUMBER) {
                 putChar('0');
                 putChar('x');
                 minWidth -= 2;
@@ -241,13 +247,13 @@ STATUS_CODE printHex(IN U64 d, IN U8 flag, IN I32 minWidth) {
         // 空格填充
         else {
             // #
-            if (flag & NUMBER) {
+            if (flag & FORMAT_FLAG_NUMBER) {
                 minWidth -= 2;
             }
             for (I32 i = 0; i < minWidth - size; i++) {
                 putChar(paddingChar);
             }
-            if (flag & NUMBER) {
+            if (flag & FORMAT_FLAG_NUMBER) {
                 putChar('0');
                 putChar('x');
             }
@@ -274,11 +280,11 @@ STATUS_CODE Printk(IN C8 *format, ...) {
 
         // 要格式化再输出
         s++;
-        U8   flag     = 0;
-        I32  padding  = 0; // 填充的位数
+        U8   flag = 0;
+        I32  padding = 0;  // 填充的位数
         BOOL firstNum = 1; // 第一次读到数字
-        BOOL stop     = 0; // 停止下方while
-        U8   intSize  = 32;
+        BOOL stop = 0;     // 停止下方while
+        U8   intSize = 32;
         while (!stop && *s != '\0') {
             switch (*s) {
                 // 输出: %
@@ -288,24 +294,24 @@ STATUS_CODE Printk(IN C8 *format, ...) {
                     break;
                 // 输出结果左对齐，右边填空格（和输出最小宽度搭配使用）
                 case '-':
-                    flag |= MINUS;
+                    flag |= FORMAT_FLAG_MINUS;
                     break;
                 // 输出结果右对齐，左边填空格（和输出最小宽度搭配使用），同时显示符号
                 case '+':
-                    flag |= PLUS;
+                    flag |= FORMAT_FLAG_PLUS;
                     break;
                 // 对 c、s、d、u 类无影响，对 o 类输出时加前缀 0，x 类输出时加前缀 0x
                 case '#':
-                    flag |= NUMBER;
+                    flag |= FORMAT_FLAG_NUMBER;
                     break;
                 // 输出符号，值为正时冠以空格，为负时冠以负号
                 case ' ':
-                    flag |= SPACE;
+                    flag |= FORMAT_FLAG_SPACE;
                     break;
                 // 放置在十进制整数的输出最小宽度前，用于当实际位数少于最小宽度时在前面补 0
                 case '0':
                     if (firstNum) {
-                        flag |= ZERO;
+                        flag |= FORMAT_FLAG_ZERO;
                         firstNum = 0;
                         break;
                     }
@@ -319,7 +325,7 @@ STATUS_CODE Printk(IN C8 *format, ...) {
                 case '8':
                 case '9':
                     firstNum = 0;
-                    padding  = padding * 10 + *s - '0';
+                    padding = padding * 10 + *s - '0';
                     break;
                 case 'l':
                     if (*(++s) == 'l') {
@@ -347,6 +353,10 @@ STATUS_CODE Printk(IN C8 *format, ...) {
                     }
                     stop = 1;
                     break;
+                case 's':
+                    printStr(va_arg(args, C8 *), padding);
+                    stop = 1;
+                    break;
                 default:
                     Printk("Illegal parameter.");
                     break;
@@ -361,9 +371,10 @@ STATUS_CODE Printk(IN C8 *format, ...) {
 STATUS_CODE rollUp() {
     gPrintkRow--;
     for (U32 i = 1; i < gPrintkLineCount; i++) {
-        PHYSICAL_ADDRESS source      = (PHYSICAL_ADDRESS)gFrameBufferBase + i * gPrintkCharHight * gPrintkCharPerLine * gPrintkCharWidth * sizeof(BGRR_PIXEL);
+        PHYSICAL_ADDRESS source = (PHYSICAL_ADDRESS)gFrameBufferBase + i * gPrintkCharHight * gPrintkCharPerLine * gPrintkCharWidth * sizeof(BGRR_PIXEL);
         PHYSICAL_ADDRESS destination = (PHYSICAL_ADDRESS)gFrameBufferBase + (i - 1) * gPrintkCharHight * gPrintkCharPerLine * gPrintkCharWidth * sizeof(BGRR_PIXEL);
         MemCopy(source, destination, sizeof(BGRR_PIXEL) * gPrintkCharWidth * gPrintkCharPerLine * gPrintkCharHight);
         SetZero(source, sizeof(BGRR_PIXEL) * gPrintkCharWidth * gPrintkCharPerLine * gPrintkCharHight);
     }
+    return 0;
 }

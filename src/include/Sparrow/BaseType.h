@@ -18,7 +18,7 @@ typedef U64 STATUS_CODE;
 
 typedef void VOID;
 
-typedef enum {
+typedef enum BOOL {
     False,
     True,
 } BOOL;
